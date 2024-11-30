@@ -1,0 +1,43 @@
+version: "3"
+
+services:
+    nats-server:
+        image: nats:latest
+        ports:
+            - "8222:8222"
+
+    client-gateway:
+        build: ./client-gateway
+        ports:
+            - "3000:3000"
+        volumes:
+            - ./client-gateway/src:/usr/src/app/src
+        command: npm run start:dev
+        environment:
+            - PORT=3000
+            - NATS_SERVERS=nats://nats-server:4222
+
+    events-ms:
+        depends_on:
+            - events-db
+        build: ./events-ms
+        volumes:
+            - ./events-ms/src:/usr/src/app/src
+        command: npm run start:dev
+        environment:
+            - PORT=3001
+            - NATS_SERVERS=nats://nats-server:4222
+            - DATABASE_URL=postgresql://read_write_user:read_write_uaser_1234@events-db:5432/eventsdb?schema=public
+
+    events-db:
+        container_name: events_database
+        image: postgres:16.2
+        restart: always
+        volumes:
+            - ./events-ms/postgres:/var/lib/postgresql/data
+        ports:
+            - 5432:5432
+        environment:
+            - POSTGRES_USER=read_write_user
+            - POSTGRES_PASSWORD=read_write_uaser_1234
+            - POSTGRES_DB=eventsdb
