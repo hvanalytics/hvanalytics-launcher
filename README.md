@@ -4,7 +4,8 @@
 1. Clonar
 2. Instalar dependencias con pnpm
 3. Crear .env basado en .env.template
-4. Ejecutar `docker compose up` agregar `--build` si es la primera instalación.
+4. Ejecutar el comando para reconstruir sub-modulos `git submodule update --init --recursive`
+5. Ejecutar `docker compose up` agregar `--build` si es la primera instalación.
 
 
 ### Pasos para crear los Git Submodules
