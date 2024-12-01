@@ -18,8 +18,8 @@ services:
             - NATS_SERVERS=nats://nats-server:4222
 
     events-ms:
-        depends_on:
-            - events-db
+        # depends_on:
+        #     - events-db
         build: ./events-ms
         volumes:
             - ./events-ms/src:/usr/src/app/src
@@ -27,17 +27,17 @@ services:
         environment:
             - PORT=3001
             - NATS_SERVERS=nats://nats-server:4222
-            - DATABASE_URL=postgresql://read_write_user:read_write_uaser_1234@events-db:5432/eventsdb?schema=public
+            - DATABASE_URL=${DATABASE_URL}
 
-    events-db:
-        container_name: events_database
-        image: postgres:16.2
-        restart: always
-        volumes:
-            - ./events-ms/postgres:/var/lib/postgresql/data
-        ports:
-            - 5432:5432
-        environment:
-            - POSTGRES_USER=read_write_user
-            - POSTGRES_PASSWORD=read_write_uaser_1234
-            - POSTGRES_DB=eventsdb
+    # events-db:
+    #     container_name: events_database
+    #     image: postgres:16.2
+    #     restart: always
+    #     volumes:
+    #         - ./events-ms/postgres:/var/lib/postgresql/data
+    #     ports:
+    #         - 5432:5432
+    #     environment:
+    #         - POSTGRES_USER=read_write_user
+    #         - POSTGRES_PASSWORD=read_write_uaser_1234
+    #         - POSTGRES_DB=eventsdb
